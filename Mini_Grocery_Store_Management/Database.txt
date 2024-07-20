@@ -1,0 +1,128 @@
+create database QL_CuaHangBanSach
+Go
+
+use QL_CuaHangBanSach
+Go
+
+-- Tạo bảng DanhMucSach
+CREATE TABLE DanhMucSach (
+    MaDanhMuc INT PRIMARY KEY NOT NULL,
+    TenDanhMuc NVARCHAR(50) NOT NULL,
+    MoTaDanhMuc NVARCHAR(100) NULL
+);
+GO
+
+-- Tạo bảng NguoiDung
+CREATE TABLE NguoiDung (
+    MaNguoiDung INT PRIMARY KEY NOT NULL,
+    TenNguoiDung NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    SoDienThoai NVARCHAR(20) NULL,
+    DiaChi NVARCHAR(255) NULL,
+    TenDangNhap NVARCHAR(50) NOT NULL,
+    MatKhau NVARCHAR(50) NOT NULL,
+    VaiTro NVARCHAR(50) NOT NULL
+);
+GO
+
+-- Tạo bảng Sach
+CREATE TABLE Sach (
+    MaSach INT PRIMARY KEY NOT NULL,
+    TenSach NVARCHAR(50) NOT NULL,
+    MoTaSach NVARCHAR(100) NULL,
+    TacGia NVARCHAR(100) NULL,
+    Gia INT NOT NULL,
+    SoLuong INT NOT NULL,
+    MaDanhMuc INT,
+    FOREIGN KEY (MaDanhMuc) REFERENCES DanhMucSach(MaDanhMuc)
+);
+GO
+
+-- Tạo lại bảng HoaDon với cột MaHoaDon là kiểu dữ liệu IDENTITY
+CREATE TABLE HoaDon (
+    MaHoaDon INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    NgayMua DATETIME NOT NULL,
+    TongTien MONEY NOT NULL,
+    MaNguoiDung INT,
+    FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung)
+);
+GO
+
+-- Tạo lại bảng ChiTietHoaDon
+CREATE TABLE ChiTietHoaDon (
+    MaHoaDon INT,
+    MaSach INT,
+    SoLuong INT NOT NULL,
+    GiaBan MONEY NOT NULL,
+    FOREIGN KEY (MaHoaDon) REFERENCES HoaDon(MaHoaDon),
+    FOREIGN KEY (MaSach) REFERENCES Sach(MaSach),
+    PRIMARY KEY (MaHoaDon, MaSach)
+);
+GO
+
+INSERT INTO DanhMucSach (MaDanhMuc, TenDanhMuc, MoTaDanhMuc)
+VALUES
+(1, N'Tiểu thuyết', N'Tiểu thuyết văn học'),
+(2, N'Tiểu thuyết trinh thám', N'Tiểu thuyết hành động với yếu tố trinh thám'),
+(3, N'Khoa học', N'Sách về khoa học tự nhiên'),
+(4, N'Tự truyện', N'Sách viết về cuộc đời của các nhân vật nổi tiếng'),
+(5, N'Kinh doanh', N'Sách về kỹ năng quản lý và khởi nghiệp'),
+(6, N'Tâm lý học', N'Sách nghiên cứu về tâm lý và tư duy con người'),
+(7, N'Truyện tranh', N'Truyện tranh và manga từ nhiều thể loại khác nhau');
+go
+
+INSERT INTO NguoiDung (MaNguoiDung, TenNguoiDung, Email, SoDienThoai, DiaChi, TenDangNhap, MatKhau, VaiTro)
+VALUES
+(1, N'Nguyễn Văn A', N'nguyenvana@example.com', N'0123456789', N'Hà Nội', N'user1', N'password1', N'Nhân viên'),
+(2, N'Phạm Thị B', N'phamthib@example.com', N'0987654321', N'Hồ Chí Minh', N'user2', N'password2', N'Nhân viên'),
+(3, N'Trần Văn C', N'tranvanc@example.com', N'0365489752', N'Đà Nẵng', N'user3', N'password3', N'Nhân viên'),
+(4, N'Lê Thị D', N'lethid@example.com', N'0946321758', N'Hải Phòng', N'user4', N'password4', N'Nhân viên'),
+(5, N'Huỳnh Văn E', N'huynhvane@example.com', N'0769854321', N'Cần Thơ', N'user5', N'password5', N'Nhân viên'),
+(6, N'Nguyễn Thị F', N'nguyenthif@example.com', N'0987456321', N'Vũng Tàu', N'user6', N'password6', N'Nhân viên'),
+(7, N'Võ Văn G', N'vovang@example.com', N'0321456987', N'Bình Dương', N'admin', N'admin123', N'Quản trị viên');
+go
+
+INSERT INTO Sach (MaSach, TenSach, MoTaSach, TacGia, Gia, SoLuong, MaDanhMuc)
+VALUES
+(1, N'Người Đua Đòi', N'Một cuộc đua đòi ly kỳ với những diễn biến bất ngờ', N'James Patterson', 150000, 20, 2),
+(2, N'Dấu Chân Trên Cát', N'Câu chuyện về cuộc sống và sự nghiệp của Messi', N'Guillem Balagué', 175000, 15, 4),
+(3, N'Cẩm nang khởi nghiệp', N'Những bí quyết để khởi nghiệp thành công', N'Eric Ries', 120000, 25, 5),
+(4, N'Cô gái đến từ hôm qua', N'Một câu chuyện tình yêu đầy cảm động', N'Nam Cao', 90000, 30, 1),
+(5, N'Bí mật của Elon Musk', N'Cuộc hành trình và bí mật của doanh nhân Elon Musk', N'Ashlee Vance', 200000, 10, 5),
+(6, N'Đắc nhân tâm', N'Cuốn sách kinh điển về kỹ năng giao tiếp và quản lý mối quan hệ', N'Dale Carnegie', 130000, 18, 6),
+(7, N'Detective Conan - Tập 1', N'Câu chuyện của một thám tử nhí tài ba', N'Gosho Aoyama', 90000, 20, 7),
+(8, N'Harry Potter và Hòn Đá Phù Thủy', N'Câu chuyện về một cậu bé phù thủy tại trường phù thủy Hogwarts', N'J.K. Rowling', 180000, 12, 1),
+(9, N'Tiền Về Nơi Nào?', N'Những bí quyết để quản lý tài chính hiệu quả', N'Robert T. Kiyosaki', 160000, 22, 5),
+(10, N'Bí Mật Của Sự Thành Công', N'Các bước cơ bản để đạt được mục tiêu và thành công trong cuộc sống', N'Napoleon Hill', 140000, 17, 6),
+(11, N'One Piece - Tập 1', N'Câu chuyện về hành trình tìm kiếm kho báu vĩ đại của Luffy và nhóm bạn', N'Eiichiro Oda', 95000, 25, 7),
+(12, N'Tiếng chim hót trong bụi mận gai', N'Câu chuyện buồn về tình yêu và hy vọng', N'Nguyễn Nhật Ánh', 80000, 28, 1),
+(13, N'Đắc nhân tâm', N'Bí kíp quản lý mọi tình huống và giao tiếp hiệu quả', N'Dale Carnegie', 130000, 15, 6),
+(14, N'Chiến lược marketing', N'Những bí quyết và chiến lược để thành công trong lĩnh vực marketing', N'Philip Kotler', 170000, 20, 5),
+(15, N'Nghệ thuật lãnh đạo', N'Bí quyết và kỹ năng cần có để trở thành một lãnh đạo xuất sắc', N'John C. Maxwell', 150000, 18, 6),
+(16, N'Thám tử lừng danh Conan - Tập 2', N'Những vụ án hấp dẫn giải quyết bởi thám tử nhí Conan', N'Gosho Aoyama', 95000, 25, 7),
+(17, N'Số đỏ', N'Bức tranh của xã hội Việt Nam qua một giai đoạn lịch sử', N'Hồ Anh Thái', 85000, 30, 1),
+(18, N'Lean Startup', N'Phương pháp khởi nghiệp linh hoạt và hiệu quả', N'Eric Ries', 125000, 15, 5),
+(19, N'Bí Mật Của Phát Triển Bản Thân', N'Các chiến lược và bí quyết để phát triển bản thân và sự nghiệp', N'Brian Tracy', 135000, 20, 6);
+go
+
+INSERT INTO HoaDon (NgayMua, TongTien, MaNguoiDung)
+VALUES
+('2024-04-20 10:30:00', 550000, 1),
+('2024-04-21 11:45:00', 670000, 2),
+('2024-04-22 09:15:00', 980000, 3),
+('2024-04-23 14:20:00', 750000, 4),
+('2024-04-24 16:50:00', 1120000, 5),
+('2024-04-25 08:10:00', 830000, 6),
+('2024-04-26 13:55:00', 460000, 7);
+go
+
+INSERT INTO ChiTietHoaDon (MaHoaDon, MaSach, SoLuong, GiaBan)
+VALUES
+(1, 1, 2, 300000),
+(1, 3, 1, 120000),
+(2, 2, 1, 175000),
+(2, 4, 3, 270000),
+(3, 5, 2, 400000),
+(3, 6, 1, 130000),
+(4, 7, 4, 360000);
+go
